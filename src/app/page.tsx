@@ -1,9 +1,16 @@
-import AuthForm from "@/components/auth-form";
+import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
+import { cookies } from "next/headers";
+import { redirect } from "next/navigation";
 
-export default function Home() {
-  return (
-    <div className="">
-      <AuthForm />
-    </div>
-  );
+export default async function Home() {
+  const supabase = createServerComponentClient({ cookies });
+
+  const {
+    data: { user },
+  } = await supabase.auth.getUser();
+
+  if (!user) {
+    redirect("/login");
+  }
+  return <div>Home Page</div>;
 }
