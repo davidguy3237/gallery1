@@ -14,6 +14,8 @@ import {
   FormMessage,
 } from "@/components/ui/form";
 import { Input } from "./ui/input";
+import { createClientComponentClient } from "@supabase/auth-helpers-nextjs";
+import { useRouter } from "next/navigation";
 
 const LoginSchema = z.object({
   email: z.string().email({ message: "Input a valid email address" }),
@@ -23,6 +25,9 @@ const LoginSchema = z.object({
 type LoginType = z.infer<typeof LoginSchema>;
 
 export default function LoginForm() {
+  const supabase = createClientComponentClient();
+  const router = useRouter();
+
   const form = useForm<LoginType>({
     resolver: zodResolver(LoginSchema),
     defaultValues: {
@@ -31,8 +36,12 @@ export default function LoginForm() {
     },
   });
 
-  const onSubmit = (values: LoginType) => {
-    console.log("LOGIN CREDENTIALS: ", values);
+  const onSubmit = async ({ email, password }: LoginType) => {
+    await supabase.auth.signInWithPassword({
+      email,
+      password,
+    });
+    router.refresh();
   };
 
   return (
@@ -72,10 +81,7 @@ export default function LoginForm() {
               )}
             />
             <div className=" mt-2 text-sm">
-              <Link
-                href={"/signup"}
-                className="text-slate-700 hover:text-slate-800 hover:underline"
-              >
+              <Link href={"/signup"} className="underline">
                 Forgot password?
               </Link>
             </div>
@@ -86,10 +92,7 @@ export default function LoginForm() {
         </Form>
         <div className="my-8 text-sm">
           Not a member?{" "}
-          <Link
-            href={"/signup"}
-            className="text-slate-700 hover:text-slate-800 hover:underline"
-          >
+          <Link href={"/signup"} className="underline">
             Sign up
           </Link>
         </div>

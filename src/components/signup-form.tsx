@@ -117,10 +117,7 @@ export default function SignUpForm() {
         </Form>
         <div className="my-8 text-sm">
           Already a member?{" "}
-          <Link
-            href={"/login"}
-            className="text-slate-700 hover:text-slate-800 hover:underline"
-          >
+          <Link href={"/login"} className="underline">
             Log in
           </Link>
         </div>
