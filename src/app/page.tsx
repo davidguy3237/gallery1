@@ -1,3 +1,4 @@
+import SignOutButton from "@/components/auth/signout-button";
 import { createServerComponentClient } from "@supabase/auth-helpers-nextjs";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
@@ -6,11 +7,17 @@ export default async function Home() {
   const supabase = createServerComponentClient({ cookies });
 
   const {
-    data: { user },
-  } = await supabase.auth.getUser();
+    data: { session },
+  } = await supabase.auth.getSession();
 
-  if (!user) {
+  if (!session) {
     redirect("/login");
   }
-  return <div>Home Page</div>;
+
+  return (
+    <div>
+      <div>Home Page</div>
+      <SignOutButton />
+    </div>
+  );
 }
